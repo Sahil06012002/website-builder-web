@@ -1,0 +1,223 @@
+import { useState, useRef, useEffect } from "react";
+import { Send, Bot, User } from "lucide-react";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string | undefined;
+  timestamp: Date;
+}
+
+interface ChatInterfaceProps {
+  initialPrompt?: string;
+  response?: string;
+}
+
+export const ChatInterface = ({
+  initialPrompt,
+  response,
+}: ChatInterfaceProps) => {
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const initialMessages: Message[] = [];
+
+    if (initialPrompt) {
+      initialMessages.push({
+        id: "1",
+        role: "user",
+        content: initialPrompt,
+        timestamp: new Date(),
+      });
+      initialMessages.push({
+        id: "2",
+        role: "assistant",
+        content: response,
+        timestamp: new Date(),
+      });
+    } else {
+      initialMessages.push({
+        id: "1",
+        role: "assistant",
+        content:
+          "Hi! I'm here to help you build amazing apps. What would you like to create today?",
+        timestamp: new Date(),
+      });
+    }
+
+    return initialMessages;
+  });
+
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (initialPrompt && response) {
+      setMessages([
+        {
+          id: "1",
+          role: "user",
+          content: initialPrompt,
+          timestamp: new Date(),
+        },
+        {
+          id: "2",
+          role: "assistant",
+          content: response,
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [initialPrompt, response]);
+  const handleSend = () => {
+    if (!input.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
+
+    // Simulated AI response
+    setTimeout(() => {
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content:
+          "I'd be happy to help you build that! Let me start working on it for you.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+      setIsTyping(false);
+    }, 1500);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-white rounded-lg">
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3 bg-gray-100">
+        <div className="w-8 h-8 rounded-md bg-orange-300 flex items-center justify-center">
+          <Bot className="w-4 h-4 text-white" />
+        </div>
+        <div>
+          <h2 className="font-medium text-sm">AI Assistant</h2>
+          <p className="text-xs text-gray-500">Ready to help</p>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div
+        ref={scrollRef}
+        className="flex-1 px-4 py-6 overflow-y-auto space-y-4"
+      >
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex gap-3 ${
+              message.role === "user" ? "flex-row-reverse" : ""
+            }`}
+          >
+            {/* Avatar */}
+            <div
+              className={`w-8 h-8 flex items-center justify-center rounded-md ${
+                message.role === "assistant" ? "bg-orange-300" : "bg-gray-300"
+              }`}
+            >
+              {message.role === "assistant" ? (
+                <Bot className="w-4 h-4 text-white" />
+              ) : (
+                <User className="w-4 h-4 text-gray-700" />
+              )}
+            </div>
+
+            {/* Message bubble */}
+            <div
+              className={`flex-1 ${
+                message.role === "user" ? "text-right" : ""
+              }`}
+            >
+              <div
+                className={`inline-block px-3 py-2 rounded-lg text-sm ${
+                  message.role === "assistant"
+                    ? "bg-gray-100 text-gray-800"
+                    : "bg-orange-300 text-white"
+                }`}
+              >
+                <p className="leading-relaxed whitespace-pre-wrap">
+                  {message.content}
+                </p>
+              </div>
+              <p className="text-xs text-gray-400 mt-1 px-1">
+                {message.timestamp.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {/* Typing indicator */}
+        {isTyping && (
+          <div className="flex gap-3">
+            <div className="w-8 h-8 bg-orange-300 flex items-center justify-center rounded-md">
+              <Bot className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-lg">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
+              <div
+                className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"
+                style={{ animationDelay: "0.2s" }}
+              />
+              <div
+                className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"
+                style={{ animationDelay: "0.4s" }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex gap-2 items-end">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Describe what you want to build..."
+            rows={1}
+            className="flex-1 min-h-10 max-h-32 resize-none border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!input.trim() || isTyping}
+            className="h-10 w-10 flex items-center justify-center bg-orange-300 hover:bg-orange-400 disabled:bg-orange-300 text-white rounded-md transition-colors"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 mt-2">
+          Press Enter to send • Shift+Enter for new line
+        </p>
+      </div>
+    </div>
+  );
+};

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Navbar } from "./navbar";
+import { useNavigate } from "react-router-dom";
 
 export const WelcomeScreen = () => {
   const [input, setInput] = useState("");
+  const navigate = useNavigate();
+
   const handleSubmit = () => {
     if (input.trim()) {
+      navigate(`/chat?message=${input}`);
     }
   };
 

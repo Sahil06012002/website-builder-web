@@ -200,15 +200,17 @@ export const ChatInterface = ({
         <div className="flex gap-2 items-end">
           <textarea
             value={input}
+            disabled={true}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Describe what you want to build..."
+            placeholder="Upgrade to premium to edit your live site.🔒"
             rows={1}
             className="flex-1 min-h-10 max-h-32 resize-none border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isTyping}
+            // disabled={!input.trim() || isTyping}
+            disabled={true}
             className="h-10 w-10 flex items-center justify-center bg-orange-300 hover:bg-orange-400 disabled:bg-orange-300 text-white rounded-md transition-colors"
           >
             <Send className="w-4 h-4" />

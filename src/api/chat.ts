@@ -1,4 +1,4 @@
-export async function getChatResponse(prompt: string) {
+export async function getChatResponse(message: string) {
   try {
     const response = await fetch("http://localhost:3001/chat", {
       method: "POST",
@@ -7,7 +7,7 @@ export async function getChatResponse(prompt: string) {
       },
       body: JSON.stringify({
         userId: "sail",
-        message: prompt,
+        message: message,
       }),
     });
     if (!response.ok) {

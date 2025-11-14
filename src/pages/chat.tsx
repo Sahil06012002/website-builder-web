@@ -2,15 +2,36 @@ import { ChatInterface } from "@/components/chatInterface";
 import { PreviewArea } from "@/components/previewArea";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Navbar } from "@/components/navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getChatResponse } from "@/api/chat";
+import { useSearchParams } from "react-router-dom";
 
 export default function Chat() {
-  const [hasStarted, setHasStarted] = useState(false);
   const [initialPrompt, setInitialPrompt] = useState<string>("");
   const [isChatVisible, setIsChatVisible] = useState(true);
   const [response, setResponse] = useState("");
   const [hostUrl, setHostUrl] = useState<string>("");
+  const [chats, setChats] = useState<string[]>([]);
+
+  const [params] = useSearchParams();
+  const message = params.get("message");
+
+  console.log(message);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (message) {
+        const response = await getChatResponse(message);
+        console.log("response.hostUrl=>>>>>>>>>>>>>>>>");
+        console.log(response.hostUrl);
+        setHostUrl(response.hostUrl);
+        setResponse(
+          `${response.answer} and you can view it on this domain ${response.hostUrl}`
+        );
+      }
+    }
+    fetchData();
+  }, []);
 
   //   const handleWelcomeSubmit = async (prompt: string) => {
   //     setInitialPrompt(prompt);

@@ -1,10 +1,11 @@
 import { RefreshCw, ExternalLink, Monitor } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EmbeddedWebsite from "./EmbeddedWebsite";
+import { useSearchParams } from "react-router-dom";
+import { getChatResponse } from "@/api/chat";
 
 export const PreviewArea = ({ hostUrl }: { hostUrl: string }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  console.log(hostUrl);
 
   const handleRefresh = () => {
     setIsRefreshing(true);

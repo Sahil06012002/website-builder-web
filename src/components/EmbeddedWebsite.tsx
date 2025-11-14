@@ -1,8 +1,6 @@
-import React from 'react'
-
-
-export default function EmbeddedWebsite() {
-  return (
-    <div>EmbeddedWebsite</div>
-  )
+type EmbeddedWebsiteProps = {
+  hostUrl: string;
+};
+export default function EmbeddedWebsite({ hostUrl }: EmbeddedWebsiteProps) {
+  return <iframe className="h-screen w-full" src={hostUrl}></iframe>;
 }

@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Navbar } from "./navbar";
-// import { getChatResponse } from "@/api/chat";
 
-interface WelcomeScreenProps {
-  onSubmit: (prompt: string) => void;
-}
-
-export const WelcomeScreen = ({ onSubmit }: WelcomeScreenProps) => {
+export const WelcomeScreen = () => {
   const [input, setInput] = useState("");
   const handleSubmit = () => {
     if (input.trim()) {
-      onSubmit(input.trim());
     }
   };
 

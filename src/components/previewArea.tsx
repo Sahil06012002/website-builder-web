@@ -1,8 +1,10 @@
 import { RefreshCw, ExternalLink, Monitor } from "lucide-react";
 import { useState } from "react";
+import EmbeddedWebsite from "./EmbeddedWebsite";
 
-export const PreviewArea = () => {
+export const PreviewArea = ({ hostUrl }: { hostUrl: string }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  console.log(hostUrl);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -39,20 +41,27 @@ export const PreviewArea = () => {
       </div>
 
       {/* Full Preview Content */}
-      <div className="flex-1 p-6 overflow-auto bg-gray-50">
-        <div className="w-full h-full bg-white rounded-lg border border-gray-300 shadow-md flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 rounded-lg bg-orange-300 flex items-center justify-center mb-4">
-            <Monitor className="w-6 h-6 text-white" />
+
+      {hostUrl === "" ? (
+        <div className="flex-1 p-6 overflow-auto bg-gray-50">
+          <div className="w-full h-full bg-white rounded-lg border border-gray-300 shadow-md flex flex-col items-center justify-center text-center">
+            <div className="w-12 h-12 rounded-lg bg-orange-300 flex items-center justify-center mb-4">
+              <Monitor className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">
+              Preview Mode
+            </h3>
+            <p className="text-sm text-gray-600 max-w-md">
+              Your app preview will appear here as you build. Start chatting
+              with the AI to see your creation come to life.
+            </p>
           </div>
-          <h3 className="text-xl font-semibold mb-2 text-gray-900">
-            Preview Mode
-          </h3>
-          <p className="text-sm text-gray-600 max-w-md">
-            Your app preview will appear here as you build. Start chatting with
-            the AI to see your creation come to life.
-          </p>
         </div>
-      </div>
+      ) : (
+        <div>
+          <EmbeddedWebsite hostUrl={hostUrl} />
+        </div>
+      )}
     </div>
   );
 };

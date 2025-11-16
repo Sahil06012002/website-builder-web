@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, User } from "lucide-react";
+import { getChatResponse } from "@/api/chat";
 
 interface Message {
   id: string;
@@ -9,46 +10,54 @@ interface Message {
 }
 
 interface ChatInterfaceProps {
-  initialPrompt?: string;
+  initialUserMessage: string;
   response?: string;
+  updateHostUrl: (hostUrl: string) => void;
 }
 
 export const ChatInterface = ({
-  initialPrompt,
+  initialUserMessage,
   response,
+  updateHostUrl,
 }: ChatInterfaceProps) => {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const initialMessages: Message[] = [];
-
-    if (initialPrompt) {
-      initialMessages.push({
-        id: "1",
-        role: "user",
-        content: initialPrompt,
-        timestamp: new Date(),
-      });
-      initialMessages.push({
-        id: "2",
-        role: "assistant",
-        content: response,
-        timestamp: new Date(),
-      });
-    } else {
-      initialMessages.push({
-        id: "1",
-        role: "assistant",
-        content:
-          "Hi! I'm here to help you build amazing apps. What would you like to create today?",
-        timestamp: new Date(),
-      });
-    }
-
-    return initialMessages;
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  async function fetchData() {
+    // setTimeout(() => {
+    //   const llmMessage: Message = {
+    //     id: Date.now().toString(),
+    //     role: "assistant",
+    //     content: "llmResponse",
+    //     timestamp: new Date(),
+    //   };
+    //   setMessages((prev) => [...prev, llmMessage]);
+    // }, 3000);
+    // const response = await getChatResponse(initialUserMessage);
+    // console.log("dsfdfad-------->");
+    // updateHostUrl(response.hostUrl);
+    // const llmMessage: Message = {
+    //   id: Date.now().toString(),
+    //   role: "assistant",
+    //   content: response.answer,
+    //   timestamp: new Date(),
+    // };
+    // setMessages((prev) => [...prev, llmMessage]);
+  }
+  useEffect(() => {
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: initialUserMessage,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -56,50 +65,18 @@ export const ChatInterface = ({
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (initialPrompt && response) {
-      setMessages([
-        {
-          id: "1",
-          role: "user",
-          content: initialPrompt,
-          timestamp: new Date(),
-        },
-        {
-          id: "2",
-          role: "assistant",
-          content: response,
-          timestamp: new Date(),
-        },
-      ]);
-    }
-  }, [initialPrompt, response]);
-  const handleSend = () => {
-    if (!input.trim()) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: input,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsTyping(true);
-
-    // Simulated AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content:
-          "I'd be happy to help you build that! Let me start working on it for you.",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500);
+  const handleSend = async () => {
+    // if (!input.trim()) return;
+    // const userMessage: Message = {
+    //   id: Date.now().toString(),
+    //   role: "user",
+    //   content: input,
+    //   timestamp: new Date(),
+    // };
+    // setMessages((prev) => [...prev, userMessage]);
+    // setInput("");
+    // setIsTyping(true);
+    // await fetchData();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -110,8 +87,7 @@ export const ChatInterface = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg">
-      {/* Header */}
+    <div className="flex flex-col h-full bg-white rounded-lg w-full">
       <div className="flex items-center gap-3 px-4 py-3 bg-gray-100">
         <div className="w-8 h-8 rounded-md bg-orange-300 flex items-center justify-center">
           <Bot className="w-4 h-4 text-white" />
@@ -122,7 +98,6 @@ export const ChatInterface = ({
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={scrollRef}
         className="flex-1 px-4 py-6 overflow-y-auto space-y-4"
@@ -134,7 +109,6 @@ export const ChatInterface = ({
               message.role === "user" ? "flex-row-reverse" : ""
             }`}
           >
-            {/* Avatar */}
             <div
               className={`w-8 h-8 flex items-center justify-center rounded-md ${
                 message.role === "assistant" ? "bg-orange-300" : "bg-gray-300"
@@ -147,7 +121,6 @@ export const ChatInterface = ({
               )}
             </div>
 
-            {/* Message bubble */}
             <div
               className={`flex-1 ${
                 message.role === "user" ? "text-right" : ""
@@ -195,7 +168,6 @@ export const ChatInterface = ({
         )}
       </div>
 
-      {/* Input Area */}
       <div className="p-4 border-t border-gray-200 bg-gray-50">
         <div className="flex gap-2 items-end">
           <textarea

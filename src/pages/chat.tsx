@@ -2,9 +2,9 @@ import { ChatInterface } from "@/components/chatInterface";
 import { PreviewArea } from "@/components/previewArea";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Navbar } from "@/components/navbar";
-import { useEffect, useState } from "react";
-import { getChatResponse } from "@/api/chat";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { ESModulesEvaluator } from "vite/module-runner";
 
 export default function Chat() {
   const [initialPrompt, setInitialPrompt] = useState<string>("");
@@ -14,53 +14,34 @@ export default function Chat() {
   const [chats, setChats] = useState<string[]>([]);
 
   const [params] = useSearchParams();
-  const message = params.get("message");
+  let message = params.get("message");
+  if (!message) {
+    message = "";
+  }
 
   console.log(message);
 
-  useEffect(() => {
-    async function fetchData() {
-      if (message) {
-        const response = await getChatResponse(message);
-        console.log("response.hostUrl=>>>>>>>>>>>>>>>>");
-        console.log(response.hostUrl);
-        setHostUrl(response.hostUrl);
-        setResponse(
-          `${response.answer} and you can view it on this domain ${response.hostUrl}`
-        );
-      }
-    }
-    fetchData();
-  }, []);
-
-  //   const handleWelcomeSubmit = async (prompt: string) => {
-  //     setInitialPrompt(prompt);
-  //     setHasStarted(true);
-  //     if (prompt.length > 0 && response.length === 0) {
-  //       const resp = await getChatResponse(prompt);
-  //       setHostUrl(resp.hostUrl);
-  //       setResponse(resp);
-  //       console.log(resp);
-  //     }
-  //   };
+  function updateHostUrl(hostUrl: string) {
+    setHostUrl(hostUrl);
+  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gray-50">
-      {/* Navbar */}
       <Navbar />
 
-      {/* Main Layout */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Chat Panel */}
         <div
           className={`${
             isChatVisible ? "flex" : "hidden"
-          } md:flex w-full md:w-[400px] lg:w-[440px] shrink-0 bg-white`}
+          }md:flex w-full md:w-[400px] lg:w-[440px] shrink-0 bg-white`}
         >
-          <ChatInterface initialPrompt={initialPrompt} response={response} />
+          <ChatInterface
+            initialUserMessage={message}
+            response={response}
+            updateHostUrl={updateHostUrl}
+          />
         </div>
 
-        {/* Toggle Chat Button (Visible on small screens) */}
         <button
           onClick={() => setIsChatVisible(!isChatVisible)}
           className="absolute top-4 right-4 z-20 bg-white rounded-full p-2 shadow-md md:hidden"
@@ -72,7 +53,6 @@ export default function Chat() {
           )}
         </button>
 
-        {/* Preview Panel */}
         <div
           className={`${
             isChatVisible ? "hidden md:flex" : "flex"

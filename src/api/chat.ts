@@ -1,5 +1,8 @@
-export async function getChatResponse(message: string) {
+export async function getChatResponse(message: string | null) {
   try {
+    if (message == null) {
+      return {};
+    }
     const response = await fetch("http://localhost:3001/chat", {
       method: "POST",
       headers: {

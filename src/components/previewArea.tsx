@@ -1,8 +1,7 @@
 import { RefreshCw, ExternalLink, Monitor } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EmbeddedWebsite from "./EmbeddedWebsite";
-import { useSearchParams } from "react-router-dom";
-import { getChatResponse } from "@/api/chat";
+import Loading from "./loading";
 
 export const PreviewArea = ({ hostUrl }: { hostUrl: string }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -45,7 +44,8 @@ export const PreviewArea = ({ hostUrl }: { hostUrl: string }) => {
 
       {hostUrl === "" ? (
         <div className="flex-1 p-6 overflow-auto bg-gray-50">
-          <div className="w-full h-full bg-white rounded-lg border border-gray-300 shadow-md flex flex-col items-center justify-center text-center">
+          <Loading></Loading>
+          {/* <div className="w-full h-full bg-white rounded-lg border border-gray-300 shadow-md flex flex-col items-center justify-center text-center">
             <div className="w-12 h-12 rounded-lg bg-orange-300 flex items-center justify-center mb-4">
               <Monitor className="w-6 h-6 text-white" />
             </div>
@@ -56,7 +56,7 @@ export const PreviewArea = ({ hostUrl }: { hostUrl: string }) => {
               Your app preview will appear here as you build. Start chatting
               with the AI to see your creation come to life.
             </p>
-          </div>
+          </div> */}
         </div>
       ) : (
         <div>

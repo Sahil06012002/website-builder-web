@@ -11,19 +11,19 @@ interface Message {
 
 interface ChatInterfaceProps {
   initialUserMessage: string;
-  response?: string;
+  // response?: string;
   updateHostUrl: (hostUrl: string) => void;
 }
 
 export const ChatInterface = ({
   initialUserMessage,
-  response,
+  // response,
   updateHostUrl,
 }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const isTyping = false;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   async function fetchData() {

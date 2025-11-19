@@ -6,11 +6,9 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function Chat() {
-  const [initialPrompt, setInitialPrompt] = useState<string>("");
   const [isChatVisible, setIsChatVisible] = useState(true);
-  const [response, setResponse] = useState("");
+  //   const [response, setResponse] = useState("");
   const [hostUrl, setHostUrl] = useState<string>("");
-  const [chats, setChats] = useState<string[]>([]);
 
   const [params] = useSearchParams();
   let message = params.get("message") ?? "";
@@ -32,7 +30,7 @@ export default function Chat() {
         >
           <ChatInterface
             initialUserMessage={message}
-            response={response}
+            // response={response}
             updateHostUrl={updateHostUrl}
           />
         </div>

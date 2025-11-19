@@ -1,4 +1,4 @@
-import { RefreshCw, ExternalLink, Monitor } from "lucide-react";
+import { RefreshCw, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import EmbeddedWebsite from "./EmbeddedWebsite";
 import Loading from "./loading";

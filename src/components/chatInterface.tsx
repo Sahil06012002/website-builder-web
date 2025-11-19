@@ -27,25 +27,15 @@ export const ChatInterface = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   async function fetchData() {
-    // setTimeout(() => {
-    //   const llmMessage: Message = {
-    //     id: Date.now().toString(),
-    //     role: "assistant",
-    //     content: "llmResponse",
-    //     timestamp: new Date(),
-    //   };
-    //   setMessages((prev) => [...prev, llmMessage]);
-    // }, 3000);
-    // const response = await getChatResponse(initialUserMessage);
-    // console.log("dsfdfad-------->");
-    // updateHostUrl(response.hostUrl);
-    // const llmMessage: Message = {
-    //   id: Date.now().toString(),
-    //   role: "assistant",
-    //   content: response.answer,
-    //   timestamp: new Date(),
-    // };
-    // setMessages((prev) => [...prev, llmMessage]);
+    const response = await getChatResponse(initialUserMessage);
+    updateHostUrl(response.hostUrl);
+    const llmMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `${response.answer}. You can visit the deployed website here on this link: ${response.hostUrl} `,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, llmMessage]);
   }
   useEffect(() => {
     const userMsg: Message = {

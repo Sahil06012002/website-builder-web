@@ -1,9 +1,10 @@
 export async function getChatResponse(message: string | null) {
   try {
+    console.log("api hit--->");
     if (message == null) {
       return {};
     }
-    const response = await fetch("http://localhost:3001/chat", {
+    const response = await fetch("http://43.205.164.162:3000/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -13,6 +14,7 @@ export async function getChatResponse(message: string | null) {
         message: message,
       }),
     });
+    console.log(response);
     if (!response.ok) {
       throw new Error("Failed to fetch chat response");
     }

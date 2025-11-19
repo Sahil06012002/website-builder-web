@@ -1,10 +1,11 @@
+const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 export async function getChatResponse(message: string | null) {
   try {
-    console.log("api hit--->");
     if (message == null) {
       return {};
     }
-    const response = await fetch("http://43.205.164.162:3000/chat", {
+    const response = await fetch(`${BACKEND_URL}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
